@@ -1,0 +1,92 @@
+module jk(
+input clk,
+input j,
+input k,
+input rst,
+output reg q,
+output reg qbar
+ );
+reg master;
+ 
+always @(posedge clk or posedge rst)
+
+begin
+if(rst)
+  master<=0;
+else
+begin
+  case({j,k})
+  2'b00:master <= master;
+
+  2'b01:master <= 0;
+  2'b10:master <= 1;
+  2'b11:master <= ~master;
+endcase
+end
+end
+
+always @(posedge clk or posedge rst)
+begin
+if(rst)
+begin 
+q<=0;
+qbar<=1;
+end
+else 
+begin
+q<=master;
+qbar<=~master;
+end
+end
+endmodule
+
+
+
+module jk_tb;
+
+reg clk;
+reg j;
+reg k;
+reg rst;
+
+wire q;
+wire qbar;
+
+jk uut(
+
+    .clk(clk),
+    .j(j),
+    .k(k),
+    .rst(rst),
+    .q(q),
+    .qbar(qbar)
+
+);
+
+always #5 clk = ~clk;
+
+initial
+begin
+
+    clk = 0;
+    rst = 1;
+    j = 0;
+    k = 0;
+
+    #10 rst = 0;
+
+    #10 j = 0; k = 0;
+    #20 j = 1; k = 0;
+    #20 j = 0; k = 1;
+    #20 j = 1; k = 1;
+
+    $finish;
+
+end
+
+endmodule
+
+
+
+
+
