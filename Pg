@@ -1,0 +1,74 @@
+module PG(
+
+    input wire [7:0] data_in,
+    output wire even_parity,
+    output wire odd_parity
+
+);
+
+assign even_parity = ^data_in;
+
+assign odd_parity = ~(^data_in);
+
+endmodule
+
+
+
+
+module PG_tb;
+
+reg [7:0] data_in;
+
+wire even_parity;
+wire odd_parity;
+
+PG uut(
+
+    .data_in(data_in),
+    .even_parity(even_parity),
+    .odd_parity(odd_parity)
+
+);
+
+initial begin
+
+    $display("Time\tData\tEven\tOdd");
+
+    data_in = 8'b00000000; #10;
+    data_in = 8'b00000001; #10;
+    data_in = 8'b00000011; #10;
+    data_in = 8'b10101010; #10;
+    data_in = 8'b11111111; #10;
+    data_in = 8'b11001100; #10;
+
+    $stop;
+
+end
+
+initial begin
+
+    $monitor("%0t\t%b\t%b\t%b",$time,data_in,even_parity,odd_parity);
+
+end
+
+endmodule
+
+
+
+
+
+set_property PACKAGE_PIN W5 [get_ports clk]
+set_property IOSTANDARD LVCMOS33 [get_ports clk]
+create_clock period 10.000 [get_ports clk]
+
+set_property PACKAGE_PIN U18 [get_ports rst]
+set_property IOSTANDARD LVCMOS33 [get_ports rst]
+
+set_property PACKAGE_PIN V17 [get_ports {data_in[0]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {data_in[0]}]
+
+set_property PACKAGE_PIN U16 [get_ports even_parity]
+set_property IOSTANDARD LVCMOS33 [get_ports even_parity]
+
+set_property PACKAGE_PIN E19 [get_ports odd_parity]
+set_property IOSTANDARD LVCMOS33 [get_ports odd_parity]
